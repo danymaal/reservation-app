@@ -1,54 +1,55 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { addReservation } from './features/reservationSlice';
-import { RootState } from './app/store';
 import './index.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { addReservation } from './features/reseravtionSlice';
+import { RootState } from './app/store';
 import ReservationCard from './components/ReservationCard';
-import { v4 as uuid } from 'uuid';
+import CustomerCard from './components/CustomerCard';
 
 function App() {
-  const [reservationInput, setReservationInput] = useState('');
-
   const dispatch = useDispatch();
 
-  const reservations = useSelector((state: RootState) => state.reservations.value);
+  const [reservationNameInput, setReservationNameInput] = useState('');
 
-  const handleAddReservation = () => {
-    if (!reservationInput) {
-      return;
-    } else {
-      dispatch(addReservation(reservationInput));
-    }
+  const reservations = useSelector((state: RootState) => state.reservations.value);
+  const customers = useSelector((state: RootState) => state.customer.value);
+  const handleAddReservations = () => {
+    dispatch(addReservation(reservationNameInput));
   };
 
   return (
-    <div>
+    <div className='App'>
       <div className='container'>
         <div className='reservation-container'>
           <div>
             <h5 className='reservation-header'>Reservations</h5>
             <div className='reservation-cards-container'>
-              {reservations.map(name => (
-                <ReservationCard name={name} key={Math.random()} />
-              ))}
+              {reservations.map((name, index) => {
+                return <ReservationCard name={name} index={index} />;
+              })}
             </div>
           </div>
           <div className='reservation-input-container'>
-            <input value={reservationInput} onChange={e => setReservationInput(e.target.value)} />
-            <button onClick={handleAddReservation}>Add</button>
+            <input
+              value={reservationNameInput}
+              onChange={e => {
+                setReservationNameInput(e.target.value);
+              }}
+            />
+            <button onClick={handleAddReservations}>Add</button>
           </div>
         </div>
         <div className='customer-food-container'>
-          <div className='customer-food-card-container'>
-            <p>Selena Gomez</p>
-            <div className='customer-foods-container'>
-              <div className='customer-food'></div>
-              <div className='customer-food-input-container'>
-                <input />
-                <button>Add</button>
-              </div>
-            </div>
-          </div>
+          {customers.map(customer => {
+            return (
+              <CustomerCard
+                id={customer.id}
+                name={customer.name}
+                food={customer.food}
+                key={customer.id}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

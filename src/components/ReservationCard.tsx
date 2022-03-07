@@ -1,12 +1,29 @@
 import React, { FC } from 'react';
+import { useDispatch } from 'react-redux';
+import { addCustomer } from '../features/customerSlice';
+import { removeReservation } from '../features/reseravtionSlice';
+import { v4 as uuid } from 'uuid';
 
-interface IReservation {
+interface ReservationCardType {
   name: string;
+  index: number;
 }
 
-const ReservationCard: FC<IReservation> = ({ name }) => {
+const ReservationCard: FC<ReservationCardType> = ({ name, index }: ReservationCardType) => {
+  const dispatch = useDispatch();
   return (
-    <div className='reservation-card-container'>
+    <div
+      className='reservation-card-container'
+      onClick={() => {
+        dispatch(removeReservation(index));
+        dispatch(
+          addCustomer({
+            id: uuid(),
+            name,
+            food: [],
+          }),
+        );
+      }}>
       <p>{name}</p>
     </div>
   );
